@@ -76,7 +76,7 @@ KC_LBRC,KC_LBRC,KC_RBRC,LSFT(KC_LBRC),LSFT(KC_RBRC), KC_GRV,                    
   //|--------+--------+--------+--------+--------+--------|                    |--------+--------+--------+--------+--------+--------|
        KC_F11,   KC_F12,KC_TRNS,KC_TRNS,KC_TRNS,KC_TRNS,                         KC_TRNS,KC_TRNS,KC_TRNS,KC_TRNS,KC_TRNS,KC_TRNS,
   //|--------+--------+--------+--------+--------+--------+--------|  |--------+--------+--------+--------+--------+--------+--------|
-                                          KC_NO, KC_TRNS,  KC_DEL,     KC_TRNS, KC_TRNS, KC_NO
+                                          KC_NO, QK_CAPS_WORD_TOGGLE,  KC_DEL,     KC_TRNS, KC_TRNS, KC_NO
                                       //`--------------------------'  `--------------------------'
   )
 };
