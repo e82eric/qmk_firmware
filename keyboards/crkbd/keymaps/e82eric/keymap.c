@@ -82,6 +82,16 @@ KC_LBRC,KC_LBRC,KC_RBRC,LSFT(KC_LBRC),LSFT(KC_RBRC), KC_GRV,                    
   )
 };
 
+uint16_t get_tapping_term(uint16_t keycode, keyrecord_t *record) {
+    switch (keycode) {
+        case LGUI_T(KC_G):
+        case LGUI_T(KC_H):
+            return TAPPING_TERM + 400;
+        default:
+            return TAPPING_TERM;
+    }
+}
+
 void leader_start_user(void) {
     // Do something when the leader key is pressed
 }
