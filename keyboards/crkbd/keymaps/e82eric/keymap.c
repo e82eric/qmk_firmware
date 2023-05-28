@@ -19,6 +19,7 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 #include QMK_KEYBOARD_H
 #include <stdio.h>
 
+
 const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
   [0] = LAYOUT_split_3x6_3(
   //,-----------------------------------------------------.                    ,-----------------------------------------------------.
@@ -26,9 +27,9 @@ const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
   //|--------+--------+--------+--------+--------+--------|                    |--------+--------+--------+--------+--------+--------|
       KC_LCTL,LT(2,KC_A),LALT_T(KC_S),LSFT_T(KC_D),LCTL_T(KC_F),LGUI_T(KC_G),   LGUI_T(KC_H),LCTL_T(KC_J),LSFT_T(KC_K),LALT_T(KC_L), LT(1,KC_SCLN), KC_QUOT,
   //|--------+--------+--------+--------+--------+--------|                    |--------+--------+--------+--------+--------+--------|
-      KC_LSFT,    KC_Z,    KC_X,    KC_C,    KC_V,    KC_B,                         KC_N,    KC_M, KC_COMM,  KC_DOT, KC_SLSH,  KC_ESC,
+      KC_LSFT,    KC_Z,    RALT_T(KC_X),    KC_C,    KC_V,    KC_B,                         KC_N,    KC_M, KC_COMM,  RALT_T(KC_DOT), KC_SLSH,  KC_ESC,
   //|--------+--------+--------+--------+--------+--------+--------|  |--------+--------+--------+--------+--------+--------+--------|
-                            KC_NO,   LT(3, KC_ESCAPE),  KC_BACKSPACE,     KC_SPACE,   LT(4,KC_ENT), KC_NO
+                            QK_LEAD,   LT(3, KC_ESCAPE),  KC_BACKSPACE,     KC_SPACE,   LT(4,KC_ENT), KC_NO
                                       //`--------------------------'  `--------------------------'
 
   ),
@@ -59,7 +60,7 @@ KC_LBRC,KC_LBRC,KC_RBRC,LSFT(KC_LBRC),LSFT(KC_RBRC), KC_GRV,                    
 
   [3] = LAYOUT_split_3x6_3(
   //,-----------------------------------------------------.                    ,-----------------------------------------------------.
-        KC_TRNS,KC_TRNS,KC_TRNS,KC_TRNS,KC_TRNS,KC_TRNS,                      XXXXXXX, XXXXXXX, XXXXXXX, XXXXXXX, XXXXXXX, XXXXXXX,
+        KC_TRNS,KC_TRNS,KC_TRNS,KC_TRNS,KC_TRNS,KC_TRNS,                      KC_AUDIO_MUTE, KC_AUDIO_VOL_DOWN, KC_AUDIO_VOL_UP, XXXXXXX, XXXXXXX, XXXXXXX,
   //|--------+--------+--------+--------+--------+--------|                    |--------+--------+--------+--------+--------+--------|
       KC_TRNS,KC_TRNS,KC_TRNS,KC_TRNS,KC_TRNS,KC_TRNS,                          KC_LEFT, KC_DOWN, KC_UP, KC_RIGHT, KC_PGUP, XXXXXXX,
   //|--------+--------+--------+--------+--------+--------|                    |--------+--------+--------+--------+--------+--------|
@@ -74,12 +75,49 @@ KC_LBRC,KC_LBRC,KC_RBRC,LSFT(KC_LBRC),LSFT(KC_RBRC), KC_GRV,                    
   //|--------+--------+--------+--------+--------+--------|                    |--------+--------+--------+--------+--------+--------|
       KC_TRNS,   KC_F1,      F2,   KC_F3,   KC_F4,   KC_F5,                     KC_TRNS,KC_TRNS,KC_TRNS,KC_TRNS,KC_TRNS,KC_TRNS,
   //|--------+--------+--------+--------+--------+--------|                    |--------+--------+--------+--------+--------+--------|
-       KC_F11,   KC_F12,KC_TRNS,KC_TRNS,KC_TRNS,KC_TRNS,                         KC_TRNS,KC_TRNS,KC_TRNS,KC_TRNS,KC_TRNS,KC_TRNS,
+       KC_TRNS,   KC_F11,KC_F12,KC_TRNS,KC_TRNS,QK_BOOT,                         KC_TRNS,KC_TRNS,KC_TRNS,KC_TRNS,KC_TRNS,KC_TRNS,
   //|--------+--------+--------+--------+--------+--------+--------|  |--------+--------+--------+--------+--------+--------+--------|
                                           KC_NO, QK_CAPS_WORD_TOGGLE,  KC_DEL,     KC_TRNS, KC_TRNS, KC_NO
                                       //`--------------------------'  `--------------------------'
   )
 };
+
+void leader_start_user(void) {
+    // Do something when the leader key is pressed
+}
+
+void leader_end_user(void)
+{
+    if (leader_sequence_one_key(KC_L))
+    {
+        SEND_STRING(SS_TAP(X_HOME) SS_LSFT(SS_TAP(X_END)));
+    }
+
+    if (leader_sequence_one_key(KC_A))
+    {
+        SEND_STRING(SS_LCTL(SS_TAP(X_HOME) SS_LSFT(SS_TAP(X_END))));
+    }
+
+    if (leader_sequence_one_key(KC_W))
+    {
+        SEND_STRING(SS_LCTL(SS_TAP(X_RGHT) SS_LSFT(SS_TAP(X_LEFT))));
+    }
+
+    if (leader_sequence_two_keys(KC_D, KC_W))
+    {
+        SEND_STRING(SS_LCTL(SS_LSFT(SS_TAP(X_RIGHT))) SS_TAP(X_BSPC));
+    }
+
+    if (leader_sequence_two_keys(KC_Y, KC_W))
+    {
+        SEND_STRING(SS_LCTL(SS_TAP(X_RGHT) SS_LSFT(SS_TAP(X_LEFT))) SS_LCTL("c") SS_TAP(X_LEFT));
+    }
+
+    if (leader_sequence_two_keys(KC_Y, KC_Y))
+    {
+        SEND_STRING(SS_TAP(X_HOME) SS_LSFT(SS_TAP(X_END)) SS_LCTL("c") SS_TAP(X_LEFT));
+    }
+}
 
 #ifdef OLED_ENABLE
 oled_rotation_t oled_init_user(oled_rotation_t rotation) {
