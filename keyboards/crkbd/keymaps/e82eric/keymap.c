@@ -19,6 +19,208 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 #include QMK_KEYBOARD_H
 #include <stdio.h>
 
+/* typedef struct { */
+/*     bool is_press_action; */
+/*     uint8_t step; */
+/* } tap; */
+
+/* enum tap_dance_codes { */
+/*   DANCE_MUTE, */
+/*   DANCE_VOLU, */
+/*   DANCE_VOLD */
+/* }; */
+
+/* enum { */
+/*     SINGLE_TAP = 1, */
+/*     SINGLE_HOLD, */
+/*     DOUBLE_TAP, */
+/*     DOUBLE_HOLD, */
+/*     DOUBLE_SINGLE_TAP, */
+/*     MORE_TAPS */
+/* }; */
+
+/* static tap dance_state[1]; */
+
+/* uint8_t dance_step(tap_dance_state_t *state); */
+
+/* uint8_t dance_step(tap_dance_state_t *state) { */
+/*     if (state->count == 1) { */
+/*         if (state->interrupted || !state->pressed || get_mods()) return SINGLE_TAP; */
+/*         else return SINGLE_HOLD; */
+/*     } */
+/*     /1* else if (state->count == 2) { *1/ */
+/*     /1*     if (state->interrupted || get_mods()) return DOUBLE_SINGLE_TAP; *1/ */
+/*     /1*     else if (state->pressed) return DOUBLE_HOLD; *1/ */
+/*     /1*     else return DOUBLE_TAP; *1/ */
+/*     /1* } *1/ */
+/*     return MORE_TAPS; */
+/* } */
+
+/* void on_dance_mute(tap_dance_state_t *state, void *user_data) { */
+/*     if(state->count == 1 && !state->pressed) */
+/*     { */
+/*         register_code(KC_Y); */
+/*         state->finished = 1; */
+/*     } */
+/*     else */
+/*     { */
+/*         register_code(KC_MUTE); */
+/*         state->finished = 1; */
+/*     } */
+/* } */
+
+/* void dance_mute_finished(tap_dance_state_t *state, void *user_data) { */
+/*     dance_state[0].step = dance_step(state); */
+/*     switch (dance_state[0].step) { */
+/*         case SINGLE_TAP: register_code16(KC_Y); break; */
+/*         case SINGLE_HOLD: */
+/*                          if(!get_mods()) */
+/*                          { */
+/*                              register_code16(KC_AUDIO_MUTE); */
+/*                          } */
+/*                          else */
+/*                          { */
+/*                              register_code16(KC_Y); */
+/*                          } */
+/*                          break; */
+/*         /1* case DOUBLE_TAP: register_code16(KC_Y); register_code16(KC_Y); break; *1/ */
+/*         /1* case DOUBLE_SINGLE_TAP: tap_code16(KC_Y); register_code16(KC_Y); *1/ */
+/*     } */
+/* } */
+
+/* void dance_mute_reset(tap_dance_state_t *state, void *user_data) { */
+/*     wait_ms(10); */
+/*     switch (dance_state[0].step) { */
+/*         case SINGLE_TAP: unregister_code16(KC_Y); break; */
+/*         case SINGLE_HOLD: */
+/*                          if(!get_mods()) */
+/*                          { */
+/*                              unregister_code16(KC_AUDIO_MUTE); */
+/*                          } */
+/*                          else */
+/*                          { */
+/*                              unregister_code16(KC_Y); */
+/*                          } */
+/*                          break; */
+/*         /1* case DOUBLE_TAP: unregister_code16(KC_Y); break; *1/ */
+/*         /1* case DOUBLE_SINGLE_TAP: unregister_code16(KC_Y); break; *1/ */
+/*     } */
+/*     dance_state[0].step = 0; */
+/* } */
+
+/* void on_dance_volu(tap_dance_state_t *state, void *user_data) { */
+/*     if(state->count == 1 && get_mods()) */
+/*     { */
+/*         tap_code16(KC_I); */
+/*         return; */
+/*     } */
+/*     if(state->count == 2) { */
+/*         tap_code16(KC_I); */
+/*         tap_code16(KC_I); */
+/*     } */
+/*     if(state->count > 2) { */
+/*         tap_code16(KC_I); */
+/*     } */
+/* } */
+
+/* void dance_volu_finished(tap_dance_state_t *state, void *user_data) { */
+/*     dance_state[0].step = dance_step(state); */
+/*     switch (dance_state[0].step) { */
+/*         case SINGLE_TAP: register_code16(KC_I); break; */
+/*         case SINGLE_HOLD: */
+/*                          if(!get_mods()) */
+/*                          { */
+/*                              register_code16(KC_AUDIO_VOL_UP); */
+/*                          } */
+/*                          else */
+/*                          { */
+/*                              register_code16(KC_I); */
+/*                          } */
+/*                          break; */
+/*         case DOUBLE_TAP: register_code16(KC_I); register_code16(KC_I); break; */
+/*         case DOUBLE_SINGLE_TAP: tap_code16(KC_I); register_code16(KC_I); */
+/*     } */
+/* } */
+
+/* void dance_volu_reset(tap_dance_state_t *state, void *user_data) { */
+/*     wait_ms(10); */
+/*     switch (dance_state[0].step) { */
+/*         case SINGLE_TAP: unregister_code16(KC_I); break; */
+/*         case SINGLE_HOLD: */
+/*                          if(!get_mods()) */
+/*                          { */
+/*                              unregister_code16(KC_AUDIO_VOL_UP); */
+/*                          } */
+/*                          else */
+/*                          { */
+/*                              unregister_code16(KC_I); */
+/*                          } */
+/*                          break; */
+/*         case DOUBLE_TAP: unregister_code16(KC_I); break; */
+/*         case DOUBLE_SINGLE_TAP: unregister_code16(KC_I); break; */
+/*     } */
+/*     dance_state[0].step = 0; */
+/* } */
+
+/* void on_dance_vold(tap_dance_state_t *state, void *user_data) { */
+/*     if(get_mods()) */
+/*     { */
+/*         tap_code16(KC_U); */
+/*         return; */
+/*     } */
+/*     if(state->count == 2) { */
+/*         tap_code16(KC_U); */
+/*         tap_code16(KC_U); */
+/*     } */
+/*     if(state->count > 2) { */
+/*         tap_code16(KC_U); */
+/*     } */
+/* } */
+
+/* void dance_vold_finished(tap_dance_state_t *state, void *user_data) { */
+/*     dance_state[0].step = dance_step(state); */
+/*     switch (dance_state[0].step) { */
+/*         case SINGLE_TAP: register_code16(KC_U); break; */
+/*         case SINGLE_HOLD: */
+/*                          if(!get_mods()) */
+/*                          { */
+/*                              register_code16(KC_AUDIO_VOL_DOWN); */
+/*                          } */
+/*                          else */
+/*                          { */
+/*                              register_code16(KC_U); */
+/*                          } */
+/*                          break; */
+/*         case DOUBLE_TAP: register_code16(KC_U); register_code16(KC_U); break; */
+/*         case DOUBLE_SINGLE_TAP: tap_code16(KC_U); register_code16(KC_U); */
+/*     } */
+/* } */
+
+/* void dance_vold_reset(tap_dance_state_t *state, void *user_data) { */
+/*     wait_ms(10); */
+/*     switch (dance_state[0].step) { */
+/*         case SINGLE_TAP: unregister_code16(KC_U); break; */
+/*         case SINGLE_HOLD: */
+/*                          if(!get_mods()) */
+/*                          { */
+/*                              unregister_code16(KC_AUDIO_VOL_DOWN); */
+/*                          } */
+/*                          else */
+/*                          { */
+/*                              unregister_code16(KC_U); */
+/*                          } */
+/*                          break; */
+/*         case DOUBLE_TAP: unregister_code16(KC_U); break; */
+/*         case DOUBLE_SINGLE_TAP: unregister_code16(KC_U); break; */
+/*     } */
+/*     dance_state[0].step = 0; */
+/* } */
+
+/* tap_dance_action_t tap_dance_actions[] = { */
+/*         [DANCE_MUTE] = ACTION_TAP_DANCE_FN_ADVANCED(on_dance_mute, dance_mute_finished, dance_mute_reset), */
+/*         [DANCE_VOLU] = ACTION_TAP_DANCE_FN_ADVANCED(on_dance_volu, dance_volu_finished, dance_volu_reset), */
+/*         [DANCE_VOLD] = ACTION_TAP_DANCE_FN_ADVANCED(on_dance_vold, dance_vold_finished, dance_vold_reset), */
+/* }; */
 
 const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
   [0] = LAYOUT_split_3x6_3(
@@ -84,11 +286,19 @@ KC_LBRC,KC_LBRC,KC_RBRC,LSFT(KC_LBRC),LSFT(KC_RBRC), KC_GRV,                    
 
 uint16_t get_tapping_term(uint16_t keycode, keyrecord_t *record) {
     switch (keycode) {
-        case LGUI_T(KC_G):
+        case LSFT_T(KC_G):
         case LGUI_T(KC_H):
-            return TAPPING_TERM + 400;
+            return TAPPING_TERM + 200;
+        case LSFT_T(KC_K):
+        case LSFT_T(KC_D):
+            return 150;
+        /* case TD(DANCE_MUTE): */
+
+        /* case TD(DANCE_VOLU): */
+        /* case TD(DANCE_VOLD): */
+        /*     return TAPPING_TERM + 200; */
         default:
-            return TAPPING_TERM;
+            return 200;
     }
 }
 
