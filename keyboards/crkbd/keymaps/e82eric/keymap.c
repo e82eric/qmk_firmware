@@ -29,6 +29,7 @@ enum custom_keycodes {
 #define AUTO_MIN_TIME 200
 #define AUTO_DEBOUNCE 200
 #define AUTO_ACTIVE_DURATION 3000
+#define AUTO_LAYER 9
 
 static uint16_t auto_debounce_timer = 0;
 static uint16_t auto_typing_timer = 0;
@@ -42,6 +43,7 @@ void auto_set_active(void)
     auto_active_timer = timer_read();
     auto_is_active = true;
     auto_is_pending = false;
+    layer_on(AUTO_LAYER);
 }
 
 void auto_extend_active(void)
@@ -55,6 +57,7 @@ void auto_set_inactive(void)
     auto_active_timer = 0;
     auto_is_active = false;
     auto_is_pending = false;
+    layer_off(AUTO_LAYER);
 }
 
 void auto_handle_non_mouse_key_press(void)
@@ -69,7 +72,7 @@ void auto_handle_mouse_event(void)
     {
         if(!auto_is_active)
         {
-            if(timer_elapsed(auto_debounce_timer) > AUTO_MOUSE_DEBOUNCE && timer_elapsed(auto_typing_timer) > AUTO_TYPING_DELAY)
+            if(timer_elapsed(auto_debounce_timer) > AUTO_DEBOUNCE && timer_elapsed(auto_typing_timer) > AUTO_TYPING_DELAY)
             {
                 if(!auto_is_pending)
                 {
@@ -136,30 +139,13 @@ bool process_record_user(uint16_t keycode, keyrecord_t *record) {
             } else {
             }
             break;
-        case RIGHT_CLICK:
-        case LEFT_CLICK:
-            if(auto_get_is_active())
-            {
-                uint16_t toPress = KC_MS_BTN1;
-                if(keycode == RIGHT_CLICK)
-                {
-                    toPress = KC_MS_BTN2;
-                }
-                if (!record->event.pressed) {
-                    unregister_code(toPress);
-                }
-                else
-                {
-                    register_code(toPress);
-                }
-                auto_handle_mouse_event();
-                return false;
-            }
-            break;
     }
 
-  auto_handle_non_mouse_key_press();
-  return true;
+    if(!auto_get_is_active())
+    {
+        auto_handle_non_mouse_key_press();
+    }
+    return true;
 };
 
 const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
@@ -327,6 +313,7 @@ report_mouse_t pointing_device_task_user(report_mouse_t mouse_report)
 {
     switch(current_layer)
     {
+        case AUTO_LAYER:
         case NONE:
             {
                 float distance_moved = sqrt((mouse_report.x * mouse_report.x) + (mouse_report.y * mouse_report.y));
@@ -418,7 +405,7 @@ report_mouse_t pointing_device_task_user(report_mouse_t mouse_report)
             break;
     }
 
-    if(current_layer != NONE)
+    if(current_layer != NONE && current_layer != AUTO_LAYER)
     {
         mouse_report.x = mouse_report.y = 0;
     }
