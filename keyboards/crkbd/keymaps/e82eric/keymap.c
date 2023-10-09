@@ -19,251 +19,146 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 #include QMK_KEYBOARD_H
 #include <stdio.h>
 
-/* typedef struct { */
-/*     bool is_press_action; */
-/*     uint8_t step; */
-/* } tap; */
-
-/* enum tap_dance_codes { */
-/*   DANCE_MUTE, */
-/*   DANCE_VOLU, */
-/*   DANCE_VOLD */
-/* }; */
-
-/* enum { */
-/*     SINGLE_TAP = 1, */
-/*     SINGLE_HOLD, */
-/*     DOUBLE_TAP, */
-/*     DOUBLE_HOLD, */
-/*     DOUBLE_SINGLE_TAP, */
-/*     MORE_TAPS */
-/* }; */
-
-/* static tap dance_state[1]; */
-
-/* uint8_t dance_step(tap_dance_state_t *state); */
-
-/* uint8_t dance_step(tap_dance_state_t *state) { */
-/*     if (state->count == 1) { */
-/*         if (state->interrupted || !state->pressed || get_mods()) return SINGLE_TAP; */
-/*         else return SINGLE_HOLD; */
-/*     } */
-/*     /1* else if (state->count == 2) { *1/ */
-/*     /1*     if (state->interrupted || get_mods()) return DOUBLE_SINGLE_TAP; *1/ */
-/*     /1*     else if (state->pressed) return DOUBLE_HOLD; *1/ */
-/*     /1*     else return DOUBLE_TAP; *1/ */
-/*     /1* } *1/ */
-/*     return MORE_TAPS; */
-/* } */
-
-/* void on_dance_mute(tap_dance_state_t *state, void *user_data) { */
-/*     if(state->count == 1 && !state->pressed) */
-/*     { */
-/*         register_code(KC_Y); */
-/*         state->finished = 1; */
-/*     } */
-/*     else */
-/*     { */
-/*         register_code(KC_MUTE); */
-/*         state->finished = 1; */
-/*     } */
-/* } */
-
-/* void dance_mute_finished(tap_dance_state_t *state, void *user_data) { */
-/*     dance_state[0].step = dance_step(state); */
-/*     switch (dance_state[0].step) { */
-/*         case SINGLE_TAP: register_code16(KC_Y); break; */
-/*         case SINGLE_HOLD: */
-/*                          if(!get_mods()) */
-/*                          { */
-/*                              register_code16(KC_AUDIO_MUTE); */
-/*                          } */
-/*                          else */
-/*                          { */
-/*                              register_code16(KC_Y); */
-/*                          } */
-/*                          break; */
-/*         /1* case DOUBLE_TAP: register_code16(KC_Y); register_code16(KC_Y); break; *1/ */
-/*         /1* case DOUBLE_SINGLE_TAP: tap_code16(KC_Y); register_code16(KC_Y); *1/ */
-/*     } */
-/* } */
-
-/* void dance_mute_reset(tap_dance_state_t *state, void *user_data) { */
-/*     wait_ms(10); */
-/*     switch (dance_state[0].step) { */
-/*         case SINGLE_TAP: unregister_code16(KC_Y); break; */
-/*         case SINGLE_HOLD: */
-/*                          if(!get_mods()) */
-/*                          { */
-/*                              unregister_code16(KC_AUDIO_MUTE); */
-/*                          } */
-/*                          else */
-/*                          { */
-/*                              unregister_code16(KC_Y); */
-/*                          } */
-/*                          break; */
-/*         /1* case DOUBLE_TAP: unregister_code16(KC_Y); break; *1/ */
-/*         /1* case DOUBLE_SINGLE_TAP: unregister_code16(KC_Y); break; *1/ */
-/*     } */
-/*     dance_state[0].step = 0; */
-/* } */
-
-/* void on_dance_volu(tap_dance_state_t *state, void *user_data) { */
-/*     if(state->count == 1 && get_mods()) */
-/*     { */
-/*         tap_code16(KC_I); */
-/*         return; */
-/*     } */
-/*     if(state->count == 2) { */
-/*         tap_code16(KC_I); */
-/*         tap_code16(KC_I); */
-/*     } */
-/*     if(state->count > 2) { */
-/*         tap_code16(KC_I); */
-/*     } */
-/* } */
-
-/* void dance_volu_finished(tap_dance_state_t *state, void *user_data) { */
-/*     dance_state[0].step = dance_step(state); */
-/*     switch (dance_state[0].step) { */
-/*         case SINGLE_TAP: register_code16(KC_I); break; */
-/*         case SINGLE_HOLD: */
-/*                          if(!get_mods()) */
-/*                          { */
-/*                              register_code16(KC_AUDIO_VOL_UP); */
-/*                          } */
-/*                          else */
-/*                          { */
-/*                              register_code16(KC_I); */
-/*                          } */
-/*                          break; */
-/*         case DOUBLE_TAP: register_code16(KC_I); register_code16(KC_I); break; */
-/*         case DOUBLE_SINGLE_TAP: tap_code16(KC_I); register_code16(KC_I); */
-/*     } */
-/* } */
-
-/* void dance_volu_reset(tap_dance_state_t *state, void *user_data) { */
-/*     wait_ms(10); */
-/*     switch (dance_state[0].step) { */
-/*         case SINGLE_TAP: unregister_code16(KC_I); break; */
-/*         case SINGLE_HOLD: */
-/*                          if(!get_mods()) */
-/*                          { */
-/*                              unregister_code16(KC_AUDIO_VOL_UP); */
-/*                          } */
-/*                          else */
-/*                          { */
-/*                              unregister_code16(KC_I); */
-/*                          } */
-/*                          break; */
-/*         case DOUBLE_TAP: unregister_code16(KC_I); break; */
-/*         case DOUBLE_SINGLE_TAP: unregister_code16(KC_I); break; */
-/*     } */
-/*     dance_state[0].step = 0; */
-/* } */
-
-/* void on_dance_vold(tap_dance_state_t *state, void *user_data) { */
-/*     if(get_mods()) */
-/*     { */
-/*         tap_code16(KC_U); */
-/*         return; */
-/*     } */
-/*     if(state->count == 2) { */
-/*         tap_code16(KC_U); */
-/*         tap_code16(KC_U); */
-/*     } */
-/*     if(state->count > 2) { */
-/*         tap_code16(KC_U); */
-/*     } */
-/* } */
-
-/* void dance_vold_finished(tap_dance_state_t *state, void *user_data) { */
-/*     dance_state[0].step = dance_step(state); */
-/*     switch (dance_state[0].step) { */
-/*         case SINGLE_TAP: register_code16(KC_U); break; */
-/*         case SINGLE_HOLD: */
-/*                          if(!get_mods()) */
-/*                          { */
-/*                              register_code16(KC_AUDIO_VOL_DOWN); */
-/*                          } */
-/*                          else */
-/*                          { */
-/*                              register_code16(KC_U); */
-/*                          } */
-/*                          break; */
-/*         case DOUBLE_TAP: register_code16(KC_U); register_code16(KC_U); break; */
-/*         case DOUBLE_SINGLE_TAP: tap_code16(KC_U); register_code16(KC_U); */
-/*     } */
-/* } */
-
-/* void dance_vold_reset(tap_dance_state_t *state, void *user_data) { */
-/*     wait_ms(10); */
-/*     switch (dance_state[0].step) { */
-/*         case SINGLE_TAP: unregister_code16(KC_U); break; */
-/*         case SINGLE_HOLD: */
-/*                          if(!get_mods()) */
-/*                          { */
-/*                              unregister_code16(KC_AUDIO_VOL_DOWN); */
-/*                          } */
-/*                          else */
-/*                          { */
-/*                              unregister_code16(KC_U); */
-/*                          } */
-/*                          break; */
-/*         case DOUBLE_TAP: unregister_code16(KC_U); break; */
-/*         case DOUBLE_SINGLE_TAP: unregister_code16(KC_U); break; */
-/*     } */
-/*     dance_state[0].step = 0; */
-/* } */
-
-/* tap_dance_action_t tap_dance_actions[] = { */
-/*         [DANCE_MUTE] = ACTION_TAP_DANCE_FN_ADVANCED(on_dance_mute, dance_mute_finished, dance_mute_reset), */
-/*         [DANCE_VOLU] = ACTION_TAP_DANCE_FN_ADVANCED(on_dance_volu, dance_volu_finished, dance_volu_reset), */
-/*         [DANCE_VOLD] = ACTION_TAP_DANCE_FN_ADVANCED(on_dance_vold, dance_vold_finished, dance_vold_reset), */
-/* }; */
-
 enum custom_keycodes {
   SELECT_LINE = SAFE_RANGE,
   SELECT_WORD,
   SELECT_ALL,
-    DRAG_SCROLL = SAFE_RANGE,
 };
 
-static uint8_t active_layer = 0;
-bool set_scrolling = false;
-// Macro to send "Hello, world!"
+#define AUTO_TYPING_DELAY 600
+#define AUTO_MIN_TIME 200
+#define AUTO_DEBOUNCE 200
+#define AUTO_ACTIVE_DURATION 3000
+
+static uint16_t auto_debounce_timer = 0;
+static uint16_t auto_typing_timer = 0;
+static uint16_t auto_active_timer = 0;
+static uint16_t auto_min_timer = 0;
+static uint16_t auto_is_active = false;
+static uint16_t auto_is_pending = false;
+
+void auto_set_active(void)
+{
+    auto_active_timer = timer_read();
+    auto_is_active = true;
+    auto_is_pending = false;
+}
+
+void auto_extend_active(void)
+{
+    auto_active_timer = timer_read();
+}
+
+void auto_set_inactive(void)
+{
+    auto_debounce_timer = timer_read();
+    auto_active_timer = 0;
+    auto_is_active = false;
+    auto_is_pending = false;
+}
+
+void auto_handle_non_mouse_key_press(void)
+{
+    auto_set_inactive();
+    auto_typing_timer = timer_read();
+}
+
+void auto_handle_mouse_event(void)
+{
+    if(timer_elapsed(auto_debounce_timer) > AUTO_DEBOUNCE)
+    {
+        if(!auto_is_active)
+        {
+            if(timer_elapsed(auto_debounce_timer) > AUTO_MOUSE_DEBOUNCE && timer_elapsed(auto_typing_timer) > AUTO_TYPING_DELAY)
+            {
+                if(!auto_is_pending)
+                {
+                    auto_is_pending = true;
+                    auto_min_timer = timer_read();
+                }
+                else if(timer_elapsed(auto_min_timer) > AUTO_MIN_TIME)
+                {
+                    auto_set_active();
+                }
+            }
+        }
+        else
+        {
+            auto_extend_active();
+        }
+        auto_debounce_timer = timer_read();
+    }
+}
+
+void auto_handle_scroll_event(void)
+{
+    if(timer_elapsed(auto_debounce_timer) > AUTO_DEBOUNCE)
+    {
+        if(auto_is_active)
+        {
+            auto_extend_active();
+        }
+        auto_debounce_timer = timer_read();
+    }
+}
+
+bool auto_get_is_active(void)
+{
+    if(timer_elapsed(auto_active_timer) > AUTO_ACTIVE_DURATION)
+    {
+        auto_set_inactive();
+    }
+    return auto_is_active;
+}
+
+#define RIGHT_CLICK KC_U
+#define LEFT_CLICK KC_Y
+
 bool process_record_user(uint16_t keycode, keyrecord_t *record) {
-  switch (keycode) {
-    case SELECT_LINE:
-      if (record->event.pressed) {
-        SEND_STRING(SS_TAP(X_HOME) SS_LSFT(SS_TAP(X_END)));
-      } else {
-        // when keycode SELECT_LINE is released
-      }
-      break;
-    case SELECT_WORD:
-      if (record->event.pressed) {
-        SEND_STRING(SS_LCTL(SS_TAP(X_RGHT) SS_LSFT(SS_TAP(X_LEFT))));
-      } else {
-        // when keycode SELECT_LINE is released
-      }
-      break;
-    case SELECT_ALL:
-      if (record->event.pressed) {
-        SEND_STRING(SS_LCTL(SS_TAP(X_HOME) SS_LSFT(SS_TAP(X_END))));
-      } else {
-      }
-      break;
-    case LT(2,KC_A):
-      if (layer_state_is(2)) {
-          layer_off(2);
-          /* active_layer = 0; // Layer 1 is off, set active_layer to 0. */
-      } else {
-          layer_on(2);
-          active_layer = active_layer ^ 1; // Layer 1 is on, set active_layer to 1.
-      }
-      break;
-  }
+    switch (keycode) {
+        case SELECT_LINE:
+            if (record->event.pressed) {
+                SEND_STRING(SS_TAP(X_HOME) SS_LSFT(SS_TAP(X_END)));
+            } else {
+                // when keycode SELECT_LINE is released
+            }
+            break;
+        case SELECT_WORD:
+            if (record->event.pressed) {
+                SEND_STRING(SS_LCTL(SS_TAP(X_RGHT) SS_LSFT(SS_TAP(X_LEFT))));
+            } else {
+                // when keycode SELECT_LINE is released
+            }
+            break;
+        case SELECT_ALL:
+            if (record->event.pressed) {
+                SEND_STRING(SS_LCTL(SS_TAP(X_HOME) SS_LSFT(SS_TAP(X_END))));
+            } else {
+            }
+            break;
+        case RIGHT_CLICK:
+        case LEFT_CLICK:
+            if(auto_get_is_active())
+            {
+                uint16_t toPress = KC_MS_BTN1;
+                if(keycode == RIGHT_CLICK)
+                {
+                    toPress = KC_MS_BTN2;
+                }
+                if (!record->event.pressed) {
+                    unregister_code(toPress);
+                }
+                else
+                {
+                    register_code(toPress);
+                }
+                auto_handle_mouse_event();
+                return false;
+            }
+            break;
+    }
+
+  auto_handle_non_mouse_key_press();
   return true;
 };
 
@@ -329,11 +224,11 @@ KC_LBRC,KC_LBRC,KC_RBRC,LSFT(KC_LBRC),LSFT(KC_RBRC), KC_GRV,                    
   ),
   [5] = LAYOUT_split_3x6_3(
   //,-----------------------------------------------------.                    ,-----------------------------------------------------.
-     KC_TRNS,LCAG(KC_6),LCAG(KC_7),LCAG(KC_8),LCAG(KC_9),LCAG(KC_0),           KC_TRNS,KC_TRNS,KC_TRNS,KC_TRNS,KC_TRNS,KC_TRNS,
+     KC_TRNS,LCAG(KC_6),LCAG(KC_7),LCAG(KC_8),LCAG(KC_9),LCAG(KC_0),           KC_MS_BTN1,KC_MS_BTN2,KC_TRNS,KC_TRNS,KC_TRNS,KC_TRNS,
   //|--------+--------+--------+--------+--------+--------|                    |--------+--------+--------+--------+--------+--------|
-     KC_TRNS,LCAG(KC_1),LCAG(KC_2),LCAG(KC_3),LCAG(KC_4),LCAG(KC_5),           KC_TRNS,KC_TRNS,KC_TRNS,KC_TRNS,KC_TRNS,KC_TRNS,
+     KC_TRNS,LCAG(KC_1),LCAG(KC_2),LCAG(KC_3),LCAG(KC_4),LCAG(KC_5),           KC_MS_BTN1,KC_MS_BTN1,KC_TRNS,KC_TRNS,KC_TRNS,KC_TRNS,
   //|--------+--------+--------+--------+--------+--------|                    |--------+--------+--------+--------+--------+--------|
-     KC_TRNS,LCAG(KC_Z),LCAG(KC_X),LCAG(KC_C),LCAG(KC_V),LCAG(KC_B),           KC_TRNS,KC_TRNS,KC_TRNS,KC_TRNS,KC_TRNS,KC_TRNS,
+     KC_TRNS,LCAG(KC_Z),LCAG(KC_X),LCAG(KC_C),LCAG(KC_V),LCAG(KC_B),           KC_MS_BTN1,KC_MS_BTN1,KC_TRNS,KC_TRNS,KC_TRNS,KC_TRNS,
   //|--------+--------+--------+--------+--------+--------+--------|  |--------+--------+--------+--------+--------+--------+--------|
                                          KC_TRNS,KC_TRNS,KC_TRNS,              LCAG(KC_SPACE),KC_TRNS,KC_TRNS
                                       //`--------------------------'  `--------------------------'
@@ -370,6 +265,17 @@ KC_LBRC,KC_LBRC,KC_RBRC,LSFT(KC_LBRC),LSFT(KC_RBRC), KC_GRV,                    
   //|--------+--------+--------+--------+--------+--------+--------|  |--------+--------+--------+--------+--------+--------+--------|
                                          KC_TRNS,KC_TRNS,KC_TRNS,              KC_SPACE,KC_TRNS,KC_TRNS
                                       //`--------------------------'  `--------------------------'
+  ),
+  [9] = LAYOUT_split_3x6_3(
+  //,-----------------------------------------------------.                    ,-----------------------------------------------------.
+     KC_TRNS,KC_TRNS,KC_TRNS,KC_TRNS,KC_TRNS,KC_TRNS,                          KC_MS_BTN1,KC_MS_BTN2,KC_TRNS,KC_TRNS,KC_TRNS,KC_TRNS,
+  //|--------+--------+--------+--------+--------+--------|                    |--------+--------+--------+--------+--------+--------|
+     KC_TRNS,KC_TRNS,KC_TRNS,KC_TRNS,KC_TRNS,KC_TRNS,                          KC_TRNS,KC_TRNS,KC_TRNS,KC_TRNS,KC_TRNS,KC_TRNS,
+  //|--------+--------+--------+--------+--------+--------|                    |--------+--------+--------+--------+--------+--------|
+     KC_TRNS,KC_TRNS,KC_TRNS,KC_TRNS,KC_TRNS,KC_TRNS,                          KC_TRNS,KC_TRNS,KC_TRNS,KC_TRNS,KC_TRNS,KC_TRNS,
+  //|--------+--------+--------+--------+--------+--------+--------|  |--------+--------+--------+--------+--------+--------+--------|
+                                         KC_TRNS,KC_TRNS,KC_TRNS,              LT(5, KC_SPACE),KC_TRNS,KC_TRNS
+                                      //`--------------------------'  `--------------------------'
   )
 };
 
@@ -383,118 +289,146 @@ uint16_t get_tapping_term(uint16_t keycode, keyrecord_t *record) {
         case LT(2,KC_A):
         case LT(2,KC_SCLN):
             return 150;
-        /* case TD(DANCE_MUTE): */
-
-        /* case TD(DANCE_VOLU): */
-        /* case TD(DANCE_VOLD): */
-        /*     return TAPPING_TERM + 200; */
         default:
             return 200;
     }
 }
 
+uint8_t current_layer = 0;
+layer_state_t layer_state_set_user(layer_state_t state) {
+    current_layer = get_highest_layer(state);
+    return state;
+}
 
+enum mouse_layers
+{
+    NONE = 0,
+    SCROLL = 5,
+    SCROLL2 = 8,
+    VOLUME = 4,
+    TAB = 3,
+};
 
-#define SCROLL_DIVISOR_H 8.0
-#define SCROLL_DIVISOR_V 8.0
+#define SCROLL_DIVISOR_H 4.0
+#define SCROLL_DIVISOR_V 4.0
 
-// Variables to store accumulated scroll values
 float scroll_accumulated_h = 0;
 float scroll_accumulated_v = 0;
 
-// Function to handle mouse reports and perform drag scrolling
-report_mouse_t pointing_device_task_user(report_mouse_t mouse_report) {
-    // Check if drag scrolling is active
-    if (active_layer == 1) {
-        // Calculate and accumulate scroll values based on mouse movement and divisors
-        scroll_accumulated_h += (float)mouse_report.x / SCROLL_DIVISOR_H;
-        scroll_accumulated_v += (float)mouse_report.y / SCROLL_DIVISOR_V;
+static uint16_t mouse_debounce_timer = 0;
+static uint16_t mouse_tab_debounce_timer = 0;
+static uint16_t mouse_volume_debounce_timer = 0;
 
-        // Assign integer parts of accumulated scroll values to the mouse report
-        mouse_report.h = (int8_t)scroll_accumulated_h;
-        mouse_report.v = (int8_t)scroll_accumulated_v;
+float slow_movement_threshold = 8.0;
+float mid_movement_threshold = 16.0;
+float fast_movement_threshold = 25.0;
 
-        // Update accumulated scroll values by subtracting the integer parts
-        scroll_accumulated_h -= (int8_t)scroll_accumulated_h;
-        scroll_accumulated_v -= (int8_t)scroll_accumulated_v;
-
-        // Clear the X and Y values of the mouse report
-        mouse_report.x = 0;
-        mouse_report.y = 0;
-    }
-    if(mouse_report.buttons & 0x00)
+report_mouse_t pointing_device_task_user(report_mouse_t mouse_report)
+{
+    switch(current_layer)
     {
-        register_code(KC_AUDIO_MUTE); // Send the KC_AUDIO_MUTE keycode
-        unregister_code(KC_AUDIO_MUTE); // Release the keycode to avoid a stuck key
+        case NONE:
+            {
+                float distance_moved = sqrt((mouse_report.x * mouse_report.x) + (mouse_report.y * mouse_report.y));
+
+                if (distance_moved <= slow_movement_threshold)
+                {
+                    mouse_report.x = 0.4 * mouse_report.x;
+                    mouse_report.y = 0.4 * mouse_report.y;
+                }
+                else if(distance_moved <= mid_movement_threshold)
+                {
+                    mouse_report.x = .8 * mouse_report.x;
+                    mouse_report.y = .8 * mouse_report.y;
+                }
+                else
+                {
+                    mouse_report.x = 1.2 * mouse_report.x;
+                    mouse_report.y = 1.2 * mouse_report.y;
+                }
+
+                if(mouse_report.buttons & 0x01)
+                {
+                    if(timer_elapsed(mouse_debounce_timer) > 500)
+                    {
+                        tap_code16(KC_AUDIO_MUTE);
+                        mouse_debounce_timer = timer_read();
+                    }
+                }
+
+                if(mouse_report.x != 0 || mouse_report.y != 0)
+                {
+                    auto_handle_mouse_event();
+                }
+            }
+            break;
+        case SCROLL:
+        case SCROLL2:
+            {
+                // Calculate and accumulate scroll values based on mouse movement and divisors
+                scroll_accumulated_h += (float)mouse_report.x / SCROLL_DIVISOR_H;
+                scroll_accumulated_v += (float)mouse_report.y / SCROLL_DIVISOR_V;
+
+                scroll_accumulated_h = -scroll_accumulated_h;
+                scroll_accumulated_v = -scroll_accumulated_v;
+
+                // Assign integer parts of accumulated scroll values to the mouse report
+                mouse_report.h = (int8_t)scroll_accumulated_h;
+                mouse_report.v = (int8_t)scroll_accumulated_v;
+
+                // Update accumulated scroll values by subtracting the integer parts
+                scroll_accumulated_h -= (int8_t)scroll_accumulated_h;
+                scroll_accumulated_v -= (int8_t)scroll_accumulated_v;
+
+                // Clear the X and Y values of the mouse report
+                mouse_report.x = 0;
+                mouse_report.y = 0;
+
+                auto_handle_mouse_event();
+            }
+            break;
+        case VOLUME:
+            if(timer_elapsed(mouse_volume_debounce_timer) > 100)
+            {
+                if(mouse_report.y > 3)
+                {
+                    tap_code16(KC_AUDIO_VOL_DOWN);
+                }
+                else if(mouse_report.y < -3)
+                {
+                    tap_code16(KC_AUDIO_VOL_UP);
+                }
+                mouse_tab_debounce_timer = timer_read();
+            }
+            break;
+        case TAB:
+            if(timer_elapsed(mouse_tab_debounce_timer) > 100)
+            {
+                if(mouse_report.y > 3)
+                {
+                    SEND_STRING(SS_LCTL(SS_LSFT(SS_TAP(X_TAB))));
+                }
+                else if(mouse_report.y < -3)
+                {
+                    SEND_STRING(SS_LCTL(SS_TAP(X_TAB)));
+                }
+                mouse_tab_debounce_timer = timer_read();
+            }
+        default:
+            break;
     }
+
+    if(current_layer != NONE)
+    {
+        mouse_report.x = mouse_report.y = 0;
+    }
+
     return mouse_report;
-}// Function to handle key events and enable/disable drag scrolling
+}
 
-/* bool process_record_user(uint16_t keycode, keyrecord_t *record) { */
-/*     switch (keycode) { */
-/*         case DRAG_SCROLL: */
-/*             // Toggle set_scrolling when DRAG_SCROLL key is pressed or released */
-/*             set_scrolling = record->event.pressed; */
-/*             break; */
-/*         default: */
-/*             break; */
-/*     } */
-/*     return true; */
-/* } */
-
-// Function to handle layer changes and disable drag scrolling when not in AUTO_MOUSE_DEFAULT_LAYER
-/* layer_state_t layer_state_set_user(layer_state_t state) { */
-/*     // Disable set_scrolling if the current layer is not the AUTO_MOUSE_DEFAULT_LAYER */
-/*     if (get_highest_layer(state) != AUTO_MOUSE_DEFAULT_LAYER) { */
-/*         set_scrolling = false; */
-/*     } */
-/*     return state; */
-/* } */
-
-/* bool set_scrolling = false; */
-/* report_mouse_t pointing_device_task_user(report_mouse_t mouse_report) { */
-/*     mouse_report.h = mouse_report.x; */
-/*     mouse_report.v = mouse_report.y; */
-/*     mouse_report.x = 0; */
-/*     mouse_report.y = 0; */
-/*     return mouse_report; */
-/* } */
-
-/* void leader_start_user(void) { */
-/*     // Do something when the leader key is pressed */
-/* } */
-
-/* void leader_end_user(void) */
+/* void ps2_mouse_moved_user(report_mouse_t *mouse_report) */
 /* { */
-/*     if (leader_sequence_one_key(KC_L)) */
-/*     { */
-/*         SEND_STRING(SS_TAP(X_HOME) SS_LSFT(SS_TAP(X_END))); */
-/*     } */
-
-/*     if (leader_sequence_one_key(KC_A)) */
-/*     { */
-/*         SEND_STRING(SS_LCTL(SS_TAP(X_HOME) SS_LSFT(SS_TAP(X_END)))); */
-/*     } */
-
-/*     if (leader_sequence_one_key(KC_W)) */
-/*     { */
-/*         SEND_STRING(SS_LCTL(SS_TAP(X_RGHT) SS_LSFT(SS_TAP(X_LEFT)))); */
-/*     } */
-
-/*     if (leader_sequence_two_keys(KC_D, KC_W)) */
-/*     { */
-/*         SEND_STRING(SS_LCTL(SS_LSFT(SS_TAP(X_RIGHT))) SS_TAP(X_BSPC)); */
-/*     } */
-
-/*     if (leader_sequence_two_keys(KC_Y, KC_W)) */
-/*     { */
-/*         SEND_STRING(SS_LCTL(SS_TAP(X_RGHT) SS_LSFT(SS_TAP(X_LEFT))) SS_LCTL("c") SS_TAP(X_LEFT)); */
-/*     } */
-
-/*     if (leader_sequence_two_keys(KC_Y, KC_Y)) */
-/*     { */
-/*         SEND_STRING(SS_TAP(X_HOME) SS_LSFT(SS_TAP(X_END)) SS_LCTL("c") SS_TAP(X_LEFT)); */
-/*     } */
+/*     auto_mouse_debounce = timer_read(); */
 /* } */
 
 #ifdef OLED_ENABLE
@@ -594,15 +528,8 @@ bool oled_task_user(void) {
     return false;
 }
 
-/* void pointing_device_init_user(void) { */
-/*     set_auto_mouse_layer(1); // only required if AUTO_MOUSE_DEFAULT_LAYER is not set to index of <mouse_layer> */
-/*     set_auto_mouse_enable(true);         // always required before the auto mouse feature will work */
-/* } */
-
-/* bool process_record_user(uint16_t keycode, keyrecord_t *record) { */
-/*   if (record->event.pressed) { */
-/*     set_keylog(keycode, record); */
-/*   } */
-/*   return true; */
-/* } */
+void pointing_device_init_user(void) {
+    set_auto_mouse_layer(5);
+    set_auto_mouse_enable(true);
+}
 #endif // OLED_ENABLE

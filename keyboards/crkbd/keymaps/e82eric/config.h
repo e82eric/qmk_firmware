@@ -1,7 +1,7 @@
 /*
 This is the c configuration file for the keymap
 
-Copyright 2012 Jun Wako <wakojun@gmail.com>
+Gopyright 2012 Jun Wako <wakojun@gmail.com>
 Copyright 2015 Jack Humbert
 
 This program is free software: you can redistribute it and/or modify
@@ -55,6 +55,6 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 #define LEADER_TIMEOUT 350
 #define TAPPING_TERM_PER_KEY
 
-#define POINTING_DEVICE_AUTO_MOUSE_ENABLE
-#define AUTO_MOUSE_DEFAULT_LAYER 1
-#define AUTO_MOUSE_TIME 3000
+#define PS2_MOUSE_X_MULTIPLIER 4
+#define PS2_MOUSE_Y_MULTIPLIER 4
+#define PS2_MOUSE_V_MULTIPLIER 1
