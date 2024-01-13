@@ -23,13 +23,22 @@ enum custom_keycodes {
   SELECT_LINE = SAFE_RANGE,
   SELECT_WORD,
   SELECT_ALL,
+  BROWSER_BACK,
+  BROWSER_FORWARD,
+  BROWSER_NEXT_TAB,
+  BROWSER_PREVIOUS_TAB,
+  BROWSER_CLOSE_TAB,
+  BROWSER_BOOKMARKS
 };
 
+#if defined(POINTING_DEVICE_ENABLE) || defined(PS2_MOUSE_ENABLE)
 #define AUTO_TYPING_DELAY 600
 #define AUTO_MIN_TIME 200
 #define AUTO_DEBOUNCE 200
-#define AUTO_ACTIVE_DURATION 3000
-#define AUTO_LAYER 9
+#define AUTO_ACTIVE_DURATION 6000
+
+#define RIGHT_CLICK KC_U
+#define LEFT_CLICK KC_Y
 
 static uint16_t auto_debounce_timer = 0;
 static uint16_t auto_typing_timer = 0;
@@ -43,7 +52,6 @@ void auto_set_active(void)
     auto_active_timer = timer_read();
     auto_is_active = true;
     auto_is_pending = false;
-    layer_on(AUTO_LAYER);
 }
 
 void auto_extend_active(void)
@@ -57,7 +65,6 @@ void auto_set_inactive(void)
     auto_active_timer = 0;
     auto_is_active = false;
     auto_is_pending = false;
-    layer_off(AUTO_LAYER);
 }
 
 void auto_handle_non_mouse_key_press(void)
@@ -113,11 +120,10 @@ bool auto_get_is_active(void)
     }
     return auto_is_active;
 }
-
-#define RIGHT_CLICK KC_U
-#define LEFT_CLICK KC_Y
+#endif //defined(POINTING_DEVICE_ENABLE) || defined(PS2_MOUSE_ENABLE)
 
 bool process_record_user(uint16_t keycode, keyrecord_t *record) {
+    bool result = true;
     switch (keycode) {
         case SELECT_LINE:
             if (record->event.pressed) {
@@ -139,14 +145,98 @@ bool process_record_user(uint16_t keycode, keyrecord_t *record) {
             } else {
             }
             break;
+        case BROWSER_BACK:
+            if (record->event.pressed) {
+                SEND_STRING(SS_LALT(SS_TAP(X_LEFT)));
+            } else {
+            }
+            break;
+        case BROWSER_FORWARD:
+            if (record->event.pressed) {
+                SEND_STRING(SS_LALT(SS_TAP(X_RIGHT)));
+            } else {
+            }
+            break;
+        case BROWSER_NEXT_TAB:
+            if (record->event.pressed) {
+                SEND_STRING(SS_LSFT(SS_LCTL(SS_TAP(X_TAB))));
+            } else {
+            }
+            break;
+        case BROWSER_PREVIOUS_TAB:
+            if (record->event.pressed) {
+                SEND_STRING(SS_LCTL(SS_TAP(X_TAB)));
+            } else {
+            }
+            break;
+        case BROWSER_CLOSE_TAB:
+            if (record->event.pressed) {
+                SEND_STRING(SS_LCTL(SS_TAP(X_W)));
+            } else {
+            }
+            break;
+        case BROWSER_BOOKMARKS:
+            if (record->event.pressed) {
+                SEND_STRING(SS_LCTL(SS_TAP(X_B))SS_DELAY(100)SS_TAP(X_TAB));
+            } else {
+            }
+            break;
+#if defined(POINTING_DEVICE_ENABLE) || defined(PS2_MOUSE_ENABLE)
+        case RIGHT_CLICK:
+        case LEFT_CLICK:
+            if(auto_get_is_active())
+            {
+                uint16_t toPress = KC_MS_BTN1;
+                if(keycode == RIGHT_CLICK)
+                {
+                    toPress = KC_MS_BTN2;
+                }
+                if (!record->event.pressed) {
+                    unregister_code(toPress);
+                }
+                else
+                {
+                    register_code(toPress);
+                }
+                auto_handle_mouse_event();
+                result = false;
+            }
+            break;
+#endif
+        default:
+            break;
     }
 
-    if(!auto_get_is_active())
+#if defined(POINTING_DEVICE_ENABLE) || defined(PS2_MOUSE_ENABLE)
+    if(record->event.pressed && result && !IS_MOUSEKEY(keycode) && keycode != LT(5, KC_SPACE))
     {
         auto_handle_non_mouse_key_press();
     }
-    return true;
+#endif
+
+    return result;
 };
+
+/* enum combos { */
+/*   MOUSE_LEFT_COMBO, */
+/*   MOUSE_RIGHT_COMBO, */
+/* }; */
+
+/* const uint16_t PROGMEM left_mouse_combo[] = {KC_Y, KC_H, COMBO_END}; */
+/* const uint16_t PROGMEM right_mouse_combo[] = {KC_U, KC_J, COMBO_END}; */
+/* /1* const uint16_t PROGMEM test_combo [] = { KC_W, KC_F, COMBO_END}; *1/ */
+
+/* combo_t key_combos[COMBO_COUNT] = { */
+/* [MOUSE_LEFT_COMBO] = COMBO(left_mouse_combo, KC_MS_BTN1), */
+/* [MOUSE_RIGHT_COMBO] = COMBO(right_mouse_combo, KC_MS_BTN2), */
+/* }; */
+
+/* const uint16_t PROGMEM left_mouse_combo[] = {KC_Y, KC_H, COMBO_END}; */
+/* const uint16_t PROGMEM right_mouse_combo[] = {KC_U, KC_J, COMBO_END}; */
+/* combo_t key_combos[] = { */
+/*     COMBO(left_mouse_combo, KC_MS_BTN1), */
+/*     COMBO(right_mouse_combo, KC_MS_BTN2), */
+/* }; */
 
 const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
   [0] = LAYOUT_split_3x6_3(
@@ -210,9 +300,9 @@ KC_LBRC,KC_LBRC,KC_RBRC,LSFT(KC_LBRC),LSFT(KC_RBRC), KC_GRV,                    
   ),
   [5] = LAYOUT_split_3x6_3(
   //,-----------------------------------------------------.                    ,-----------------------------------------------------.
-     KC_TRNS,LCAG(KC_6),LCAG(KC_7),LCAG(KC_8),LCAG(KC_9),LCAG(KC_0),           KC_MS_BTN1,KC_MS_BTN2,KC_TRNS,KC_TRNS,KC_TRNS,KC_TRNS,
+     KC_TRNS,LCAG(KC_6),LCAG(KC_7),LCAG(KC_8),LCAG(KC_9),LCAG(KC_0),           KC_F5,BROWSER_NEXT_TAB,BROWSER_PREVIOUS_TAB,BROWSER_CLOSE_TAB,BROWSER_BOOKMARKS,KC_TRNS,
   //|--------+--------+--------+--------+--------+--------|                    |--------+--------+--------+--------+--------+--------|
-     KC_TRNS,LCAG(KC_1),LCAG(KC_2),LCAG(KC_3),LCAG(KC_4),LCAG(KC_5),           KC_MS_BTN1,KC_MS_BTN1,KC_TRNS,KC_TRNS,KC_TRNS,KC_TRNS,
+     KC_TRNS,LCAG(KC_1),LCAG(KC_2),LCAG(KC_3),LCAG(KC_4),LCAG(KC_5),           BROWSER_BACK,KC_DOWN,KC_UP,BROWSER_FORWARD,KC_TRNS,KC_TRNS,
   //|--------+--------+--------+--------+--------+--------|                    |--------+--------+--------+--------+--------+--------|
      KC_TRNS,LCAG(KC_Z),LCAG(KC_X),LCAG(KC_C),LCAG(KC_V),LCAG(KC_B),           KC_MS_BTN1,KC_MS_BTN1,KC_TRNS,KC_TRNS,KC_TRNS,KC_TRNS,
   //|--------+--------+--------+--------+--------+--------+--------|  |--------+--------+--------+--------+--------+--------+--------|
@@ -236,7 +326,7 @@ KC_LBRC,KC_LBRC,KC_RBRC,LSFT(KC_LBRC),LSFT(KC_RBRC), KC_GRV,                    
   //|--------+--------+--------+--------+--------+--------|                    |--------+--------+--------+--------+--------+--------|
      KC_TRNS,LCAG(KC_F1),LCAG(KC_F2),LCAG(KC_F3),LCAG(KC_F4),LCAG(KC_F5),      KC_TRNS,KC_TRNS,KC_TRNS,KC_TRNS,KC_TRNS,KC_TRNS,
   //|--------+--------+--------+--------+--------+--------|                    |--------+--------+--------+--------+--------+--------|
-     KC_TRNS,SELECT_LINE,SELECT_WORD,SELECT_ALL,KC_TRNS,QK_BOOT,                          KC_TRNS,KC_TRNS,KC_TRNS,KC_TRNS,KC_TRNS,KC_TRNS,
+     KC_TRNS,SELECT_LINE,SELECT_WORD,SELECT_ALL,DB_TOGG,QK_BOOT,                          KC_TRNS,KC_TRNS,KC_TRNS,KC_TRNS,KC_TRNS,KC_TRNS,
   //|--------+--------+--------+--------+--------+--------+--------|  |--------+--------+--------+--------+--------+--------+--------|
                                          KC_TRNS,KC_TRNS,KC_TRNS,              KC_SPACE,KC_TRNS,KC_TRNS
                                       //`--------------------------'  `--------------------------'
@@ -260,7 +350,7 @@ KC_LBRC,KC_LBRC,KC_RBRC,LSFT(KC_LBRC),LSFT(KC_RBRC), KC_GRV,                    
   //|--------+--------+--------+--------+--------+--------|                    |--------+--------+--------+--------+--------+--------|
      KC_TRNS,KC_TRNS,KC_TRNS,KC_TRNS,KC_TRNS,KC_TRNS,                          KC_TRNS,KC_TRNS,KC_TRNS,KC_TRNS,KC_TRNS,KC_TRNS,
   //|--------+--------+--------+--------+--------+--------+--------|  |--------+--------+--------+--------+--------+--------+--------|
-                                         KC_TRNS,KC_TRNS,KC_TRNS,              LT(5, KC_SPACE),KC_TRNS,KC_TRNS
+                                         KC_TRNS,KC_TRNS,KC_TRNS,              KC_TRNS,KC_TRNS,KC_TRNS
                                       //`--------------------------'  `--------------------------'
   )
 };
@@ -291,29 +381,24 @@ enum mouse_layers
     NONE = 0,
     SCROLL = 5,
     SCROLL2 = 8,
-    VOLUME = 4,
-    TAB = 3,
+    _VOLUME = 4,
 };
 
-#define SCROLL_DIVISOR_H 4.0
-#define SCROLL_DIVISOR_V 4.0
+#ifdef POINTING_DEVICE_ENABLE
+#define SCROLL_DIVISOR_V 8.0
 
-float scroll_accumulated_h = 0;
 float scroll_accumulated_v = 0;
 
 static uint16_t mouse_debounce_timer = 0;
-static uint16_t mouse_tab_debounce_timer = 0;
-static uint16_t mouse_volume_debounce_timer = 0;
 
 float slow_movement_threshold = 8.0;
 float mid_movement_threshold = 16.0;
 float fast_movement_threshold = 25.0;
 
-report_mouse_t pointing_device_task_user(report_mouse_t mouse_report)
+report_mouse_t process_mouse_report(report_mouse_t mouse_report)
 {
     switch(current_layer)
     {
-        case AUTO_LAYER:
         case NONE:
             {
                 float distance_moved = sqrt((mouse_report.x * mouse_report.x) + (mouse_report.y * mouse_report.y));
@@ -341,6 +426,7 @@ report_mouse_t pointing_device_task_user(report_mouse_t mouse_report)
                         tap_code16(KC_AUDIO_MUTE);
                         mouse_debounce_timer = timer_read();
                     }
+                    mouse_report.buttons = 0;
                 }
 
                 if(mouse_report.x != 0 || mouse_report.y != 0)
@@ -352,60 +438,36 @@ report_mouse_t pointing_device_task_user(report_mouse_t mouse_report)
         case SCROLL:
         case SCROLL2:
             {
-                // Calculate and accumulate scroll values based on mouse movement and divisors
-                scroll_accumulated_h += (float)mouse_report.x / SCROLL_DIVISOR_H;
                 scroll_accumulated_v += (float)mouse_report.y / SCROLL_DIVISOR_V;
 
-                scroll_accumulated_h = -scroll_accumulated_h;
                 scroll_accumulated_v = -scroll_accumulated_v;
 
-                // Assign integer parts of accumulated scroll values to the mouse report
-                mouse_report.h = (int8_t)scroll_accumulated_h;
+                mouse_report.h = 0;
                 mouse_report.v = (int8_t)scroll_accumulated_v;
 
-                // Update accumulated scroll values by subtracting the integer parts
-                scroll_accumulated_h -= (int8_t)scroll_accumulated_h;
                 scroll_accumulated_v -= (int8_t)scroll_accumulated_v;
 
-                // Clear the X and Y values of the mouse report
                 mouse_report.x = 0;
                 mouse_report.y = 0;
 
-                auto_handle_mouse_event();
+                auto_handle_scroll_event();
             }
             break;
-        case VOLUME:
-            if(timer_elapsed(mouse_volume_debounce_timer) > 100)
+        case _VOLUME:
+            if(mouse_report.y > 3)
             {
-                if(mouse_report.y > 3)
-                {
-                    tap_code16(KC_AUDIO_VOL_DOWN);
-                }
-                else if(mouse_report.y < -3)
-                {
-                    tap_code16(KC_AUDIO_VOL_UP);
-                }
-                mouse_tab_debounce_timer = timer_read();
+                tap_code16(KC_AUDIO_VOL_DOWN);
+            }
+            else if(mouse_report.y < -3)
+            {
+                tap_code16(KC_AUDIO_VOL_UP);
             }
             break;
-        case TAB:
-            if(timer_elapsed(mouse_tab_debounce_timer) > 100)
-            {
-                if(mouse_report.y > 3)
-                {
-                    SEND_STRING(SS_LCTL(SS_LSFT(SS_TAP(X_TAB))));
-                }
-                else if(mouse_report.y < -3)
-                {
-                    SEND_STRING(SS_LCTL(SS_TAP(X_TAB)));
-                }
-                mouse_tab_debounce_timer = timer_read();
-            }
         default:
             break;
     }
 
-    if(current_layer != NONE && current_layer != AUTO_LAYER)
+    if(current_layer != NONE)
     {
         mouse_report.x = mouse_report.y = 0;
     }
@@ -413,10 +475,58 @@ report_mouse_t pointing_device_task_user(report_mouse_t mouse_report)
     return mouse_report;
 }
 
-/* void ps2_mouse_moved_user(report_mouse_t *mouse_report) */
-/* { */
-/*     auto_mouse_debounce = timer_read(); */
-/* } */
+report_mouse_t pointing_device_task_user(report_mouse_t mouse_report)
+{
+    return process_mouse_report(mouse_report);
+}
+#endif
+
+#ifdef PS2_MOUSE_ENABLE
+void ps2_mouse_moved_user(report_mouse_t *mouse_report)
+{
+#ifdef CONSOLE_ENABLE
+    uprintf("PS2 report before: x:%u y:%u v:%u h:%u layer:%u\n", mouse_report->x, mouse_report->y, mouse_report->v, mouse_report->h, current_layer);
+#endif
+    switch(current_layer)
+    {
+        case NONE:
+            if(mouse_report->x != 0 || mouse_report->y != 0)
+            {
+                auto_handle_mouse_event();
+            }
+            break;
+        case SCROLL:
+        case SCROLL2:
+            if(mouse_report->y != 0)
+            {
+                mouse_report->v = -mouse_report->y * .4;
+                auto_handle_scroll_event();
+            }
+            break;
+        case _VOLUME:
+            if(mouse_report->y > 3)
+            {
+                tap_code16(KC_AUDIO_VOL_DOWN);
+            }
+            else if(mouse_report->y < -3)
+            {
+                tap_code16(KC_AUDIO_VOL_UP);
+            }
+            break;
+        default:
+            break;
+    }
+
+    if(current_layer != NONE)
+    {
+        mouse_report->x = 0;
+        mouse_report->y = 0;
+    }
+#ifdef CONSOLE_ENABLE
+    uprintf("PS2 report after: x:%u y:%u v:%u h:%u\n", mouse_report->x, mouse_report->y, mouse_report->v, mouse_report->h);
+#endif
+}
+#endif
 
 #ifdef OLED_ENABLE
 oled_rotation_t oled_init_user(oled_rotation_t rotation) {
@@ -514,9 +624,12 @@ bool oled_task_user(void) {
     }
     return false;
 }
-
-void pointing_device_init_user(void) {
-    set_auto_mouse_layer(5);
-    set_auto_mouse_enable(true);
-}
 #endif // OLED_ENABLE
+
+/* void keyboard_post_init_user(void) { */
+/*   // Customise these values to desired behaviour */
+/*   debug_enable=true; */
+/*   debug_matrix=true; */
+/*   debug_keyboard=true; */
+/*   debug_mouse=true; */
+/* } */

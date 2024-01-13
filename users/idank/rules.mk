@@ -3,6 +3,7 @@
 # Disable things we don't support that take up unnecessary space.
 RGBLIGHT_SUPPORTED = no
 RGB_MATRIX_SUPPORTED = no
+# CONSOLE_ENABLE = yes
 
 ifeq ($(strip $(POINTING_DEVICE_POSITION)), left)
 	OPT_DEFS += -DPOINTING_DEVICE_POSITION_LEFT

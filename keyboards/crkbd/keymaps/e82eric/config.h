@@ -55,6 +55,9 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 #define LEADER_TIMEOUT 350
 #define TAPPING_TERM_PER_KEY
 
-#define PS2_MOUSE_X_MULTIPLIER 4
-#define PS2_MOUSE_Y_MULTIPLIER 4
+#define PS2_MOUSE_X_MULTIPLIER 1
+#define PS2_MOUSE_Y_MULTIPLIER 1
 #define PS2_MOUSE_V_MULTIPLIER 1
+
+/* #define COMBO_COUNT 2 */
+/* #define COMBO_TERM 150 */
