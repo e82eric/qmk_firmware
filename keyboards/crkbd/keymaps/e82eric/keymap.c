@@ -217,27 +217,6 @@ bool process_record_user(uint16_t keycode, keyrecord_t *record) {
     return result;
 };
 
-/* enum combos { */
-/*   MOUSE_LEFT_COMBO, */
-/*   MOUSE_RIGHT_COMBO, */
-/* }; */
-
-/* const uint16_t PROGMEM left_mouse_combo[] = {KC_Y, KC_H, COMBO_END}; */
-/* const uint16_t PROGMEM right_mouse_combo[] = {KC_U, KC_J, COMBO_END}; */
-/* /1* const uint16_t PROGMEM test_combo [] = { KC_W, KC_F, COMBO_END}; *1/ */
-
-/* combo_t key_combos[COMBO_COUNT] = { */
-/* [MOUSE_LEFT_COMBO] = COMBO(left_mouse_combo, KC_MS_BTN1), */
-/* [MOUSE_RIGHT_COMBO] = COMBO(right_mouse_combo, KC_MS_BTN2), */
-/* }; */
-
-/* const uint16_t PROGMEM left_mouse_combo[] = {KC_Y, KC_H, COMBO_END}; */
-/* const uint16_t PROGMEM right_mouse_combo[] = {KC_U, KC_J, COMBO_END}; */
-/* combo_t key_combos[] = { */
-/*     COMBO(left_mouse_combo, KC_MS_BTN1), */
-/*     COMBO(right_mouse_combo, KC_MS_BTN2), */
-/* }; */
-
 const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
   [0] = LAYOUT_split_3x6_3(
   //,-----------------------------------------------------.                    ,-----------------------------------------------------.
@@ -302,7 +281,7 @@ KC_LBRC,KC_LBRC,KC_RBRC,LSFT(KC_LBRC),LSFT(KC_RBRC), KC_GRV,                    
   //,-----------------------------------------------------.                    ,-----------------------------------------------------.
      KC_TRNS,LCAG(KC_6),LCAG(KC_7),LCAG(KC_8),LCAG(KC_9),LCAG(KC_0),           KC_F5,BROWSER_NEXT_TAB,BROWSER_PREVIOUS_TAB,BROWSER_CLOSE_TAB,BROWSER_BOOKMARKS,KC_TRNS,
   //|--------+--------+--------+--------+--------+--------|                    |--------+--------+--------+--------+--------+--------|
-     KC_TRNS,LCAG(KC_1),LCAG(KC_2),LCAG(KC_3),LCAG(KC_4),LCAG(KC_5),           BROWSER_BACK,KC_DOWN,KC_UP,BROWSER_FORWARD,KC_TRNS,KC_TRNS,
+     KC_TRNS,LCAG(KC_1),LCAG(KC_2),LCAG(KC_3),LCAG(KC_4),LCAG(KC_5),           BROWSER_BACK,KC_DOWN,LSFT_T(KC_UP),BROWSER_FORWARD,KC_TRNS,KC_TRNS,
   //|--------+--------+--------+--------+--------+--------|                    |--------+--------+--------+--------+--------+--------|
      KC_TRNS,LCAG(KC_Z),LCAG(KC_X),LCAG(KC_C),LCAG(KC_V),LCAG(KC_B),           KC_MS_BTN1,KC_MS_BTN1,KC_TRNS,KC_TRNS,KC_TRNS,KC_TRNS,
   //|--------+--------+--------+--------+--------+--------+--------|  |--------+--------+--------+--------+--------+--------+--------|
