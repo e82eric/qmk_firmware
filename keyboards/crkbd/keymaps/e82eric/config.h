@@ -50,6 +50,7 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
 #define OLED_FONT_H "keyboards/crkbd/lib/glcdfont.c"
 
+#define PERMISSIVE_HOLD
 #define TAPPING_FORCE_HOLD
 #define TAPPING_TERM 150
 #define LEADER_TIMEOUT 350
@@ -58,6 +59,3 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 #define PS2_MOUSE_X_MULTIPLIER 1
 #define PS2_MOUSE_Y_MULTIPLIER 1
 #define PS2_MOUSE_V_MULTIPLIER 1
-
-/* #define COMBO_COUNT 2 */
-/* #define COMBO_TERM 150 */
